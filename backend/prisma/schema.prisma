@@ -1,0 +1,657 @@
+generator client {
+  provider     = "prisma-client-js"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum ScheduleEntityType {
+  GROUP
+  TEACHER
+}
+
+enum FileVisibility {
+  PRIVATE
+  SHARED
+  PUBLIC
+}
+
+enum TestQuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  TEXT
+}
+
+enum TestAttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+  EXPIRED
+}
+
+enum ProctorEventType {
+  PAGE_HIDDEN
+  PAGE_VISIBLE
+  WINDOW_BLUR
+  WINDOW_FOCUS
+  FULLSCREEN_EXIT
+  COPY
+  PASTE
+  CUSTOM
+}
+
+model PushSubscription {
+  id       String @id @default(uuid())
+  endpoint String @unique
+  p256dh   String
+  auth     String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Specialty {
+  id           String  @id @default(uuid())
+  name         String  @unique
+  iconName     String  @default("graduation-cap")
+  animationUrl String?
+
+  groups Group[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Group {
+  id             String  @id @default(uuid())
+  name           String
+  normalizedName String  @unique
+  isActive       Boolean @default(true)
+
+  specialtyId String?
+  specialty   Specialty? @relation(fields: [specialtyId], references: [id], onDelete: SetNull)
+
+  curatorTeacherId String?
+  curatorTeacher   Teacher? @relation("GroupCuratorTeacher", fields: [curatorTeacherId], references: [id], onDelete: SetNull)
+
+  curatorAdminId String?
+  curatorAdmin   User?   @relation("GroupCuratorAdmin", fields: [curatorAdminId], references: [id], onDelete: SetNull)
+
+  externalGroups ScheduleGroupExternal[]
+  students       Student[]
+  lessons        Lesson[]
+  favoritedBy    UserFavoriteGroup[]
+  lessonPlans    LessonPlan[]
+  testAssignments TestAssignment[]
+  fileShares     FileShare[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id                 String  @id @default(uuid())
+  fullName           String
+  normalizedFullName String
+
+  groupId String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  inviteToken String? @unique
+
+  grades       Grade[]
+  testAttempts TestAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([normalizedFullName, groupId])
+  @@index([groupId])
+}
+
+model Teacher {
+  id                 String  @id @default(uuid())
+  fullName           String
+  normalizedFullName String  @unique
+  isActive           Boolean @default(true)
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  inviteToken String? @unique
+
+  externalTeachers ScheduleTeacherExternal[]
+
+  subjects         TeacherSubject[]
+  lessons          Lesson[]
+  lessonTeachers   LessonTeacher[]
+  replacedLessons  Lesson[] @relation("ReplacedLessons")
+  curatedGroups    Group[]  @relation("GroupCuratorTeacher")
+  lessonPlans      LessonPlan[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserDevice {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent  String
+  ip         String
+  lastSeenAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, userAgent, ip])
+}
+
+model User {
+  id          String @id @default(uuid())
+  username    String @unique
+  password    String
+  role        Role
+  displayName String?
+
+  refreshToken String? @unique
+
+  student Student?
+  teacher Teacher?
+
+  curatedGroups Group[] @relation("GroupCuratorAdmin")
+
+  comments      GradeComment[]
+  createdGrades Grade[] @relation("CreatedGrades")
+
+  favoriteGroups           UserFavoriteGroup[]
+  favoriteScheduleGroups   ScheduleFavoriteGroup[]
+  favoriteScheduleTeachers ScheduleFavoriteTeacher[]
+
+  notifications     Notification[]
+  pushSubscriptions PushSubscription[]
+  devices           UserDevice[]
+
+  ownedFiles         FileAsset[] @relation("UserOwnedFiles")
+  fileSharesReceived FileShare[] @relation("FileShareTargetUser")
+  createdTests       Test[]      @relation("CreatedTests")
+  testAttempts       TestAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subject {
+  id   String @id @default(uuid())
+  name String @unique
+
+  teachers    TeacherSubject[]
+  lessons     Lesson[]
+  lessonPlans LessonPlan[]
+  tests       Test[]
+}
+
+model TeacherSubject {
+  teacherId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@id([teacherId, subjectId])
+}
+
+model Lesson {
+  id               String   @id @default(uuid())
+  externalLessonId String?
+  date             DateTime
+  lessonNumber     Int      @default(0)
+  startTime        String?
+  endTime          String?
+  typeLesson       String?
+  topic            String?
+  description      String?
+
+  groupId String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  subjectId String?
+  subject   Subject? @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+
+  teacherId String?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+
+  replacedById String?
+  replacedBy   Teacher? @relation("ReplacedLessons", fields: [replacedById], references: [id], onDelete: SetNull)
+
+  cabinetId   String?
+  cabinet     Cabinet? @relation(fields: [cabinetId], references: [id], onDelete: SetNull)
+  cabinetName String?
+  building    String?
+
+  lessonPlanTopicId String?
+  lessonPlanTopic   LessonPlanTopic? @relation(fields: [lessonPlanTopicId], references: [id], onDelete: SetNull)
+
+  lessonTeachers LessonTeacher[]
+  grades         Grade[]
+  materials      FileAsset[] @relation("LessonMaterials")
+  tests          Test[]      @relation("TestGradeLesson")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([externalLessonId, groupId])
+  @@index([groupId, date])
+  @@index([teacherId, date])
+}
+
+model LessonTeacher {
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  teacherId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  externalTeacherId Int?
+
+  @@id([lessonId, teacherId])
+}
+
+model LessonPlan {
+  id          String @id @default(uuid())
+  title       String
+  description String?
+
+  groupId String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  teacherId String?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+
+  fileId String? @unique
+  file   FileAsset? @relation("LessonPlanFile", fields: [fileId], references: [id], onDelete: SetNull)
+
+  topics LessonPlanTopic[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LessonPlanTopic {
+  id          String  @id @default(uuid())
+  order       Int
+  title       String
+  description String?
+
+  lessonPlanId String
+  lessonPlan   LessonPlan @relation(fields: [lessonPlanId], references: [id], onDelete: Cascade)
+
+  lessons Lesson[]
+
+  @@unique([lessonPlanId, order])
+}
+
+model Grade {
+  id      String @id @default(uuid())
+  value   Int
+  comment String?
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User   @relation("CreatedGrades", fields: [createdById], references: [id], onDelete: Restrict)
+
+  sourceAttemptId String? @unique
+  sourceAttempt   TestAttempt? @relation(fields: [sourceAttemptId], references: [id], onDelete: SetNull)
+
+  comments GradeComment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, lessonId])
+}
+
+model GradeComment {
+  id   String @id @default(uuid())
+  text String
+
+  gradeId String
+  grade   Grade  @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserFavoriteGroup {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  groupId String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([userId, groupId])
+}
+
+model ScheduleGroupExternal {
+  id   Int    @id
+  name String
+
+  normalizedName String
+
+  groupId String?
+  group   Group? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  favorites ScheduleFavoriteGroup[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([groupId])
+  @@index([normalizedName])
+}
+
+model ScheduleTeacherExternal {
+  id  Int    @id
+  fio String
+
+  normalizedFio String
+
+  teacherId String?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+
+  favorites ScheduleFavoriteTeacher[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teacherId])
+  @@index([normalizedFio])
+}
+
+model ScheduleFavoriteGroup {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  externalGroupId Int
+  externalGroup   ScheduleGroupExternal @relation(fields: [externalGroupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, externalGroupId])
+}
+
+model ScheduleFavoriteTeacher {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  externalTeacherId Int
+  externalTeacher   ScheduleTeacherExternal @relation(fields: [externalTeacherId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, externalTeacherId])
+}
+
+model ScheduleCache {
+  id String @id @default(uuid())
+
+  type       ScheduleEntityType
+  externalId Int
+  weekStart  DateTime
+
+  data Json
+  hash String
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([type, externalId, weekStart])
+}
+
+model ScheduleChange {
+  id String @id @default(uuid())
+
+  type       ScheduleEntityType
+  externalId Int
+  weekStart  DateTime
+
+  diff Json
+
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type  String
+  title String
+  body  String
+
+  read Boolean @default(false)
+
+  data Json?
+
+  createdAt DateTime @default(now())
+}
+
+model Cabinet {
+  id String @id @default(uuid())
+
+  name      String  @unique
+  shortName String?
+
+  building String?
+  floor    Int?
+
+  ignore Boolean @default(false)
+
+  lessons Lesson[]
+}
+
+model FileAsset {
+  id String @id @default(uuid())
+
+  ownerId String
+  owner   User   @relation("UserOwnedFiles", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  name         String
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+  storagePath  String
+  visibility   FileVisibility @default(PRIVATE)
+
+  lessonId String?
+  lesson   Lesson? @relation("LessonMaterials", fields: [lessonId], references: [id], onDelete: SetNull)
+
+  lessonPlan LessonPlan? @relation("LessonPlanFile")
+  shares     FileShare[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+}
+
+model FileShare {
+  id String @id @default(uuid())
+
+  fileId String
+  file   FileAsset @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  targetUserId String?
+  targetUser   User? @relation("FileShareTargetUser", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  targetGroupId String?
+  targetGroup   Group? @relation(fields: [targetGroupId], references: [id], onDelete: Cascade)
+
+  canDownload Boolean @default(true)
+  expiresAt   DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([targetUserId])
+  @@index([targetGroupId])
+}
+
+model Test {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+
+  creatorId String
+  creator   User   @relation("CreatedTests", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  subjectId String?
+  subject   Subject? @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+
+  deadline    DateTime?
+  maxAttempts Int       @default(1)
+  isGrade     Boolean   @default(false)
+
+  gradeLessonId String?
+  gradeLesson   Lesson? @relation("TestGradeLesson", fields: [gradeLessonId], references: [id], onDelete: SetNull)
+
+  questions   TestQuestion[]
+  assignments TestAssignment[]
+  attempts    TestAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TestAssignment {
+  id String @id @default(uuid())
+
+  testId String
+  test   Test   @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  groupId String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([testId, groupId])
+}
+
+model TestQuestion {
+  id    String           @id @default(uuid())
+  type  TestQuestionType
+  order Int
+  text  String
+  points Int             @default(1)
+
+  textAnswer String?
+  minMatchPercent Int @default(80)
+
+  testId String
+  test   Test   @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  options TestOption[]
+  answers TestAttemptAnswer[]
+
+  @@unique([testId, order])
+}
+
+model TestOption {
+  id        String  @id @default(uuid())
+  order     Int
+  text      String
+  isCorrect Boolean @default(false)
+
+  questionId String
+  question   TestQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, order])
+}
+
+model TestAttempt {
+  id String @id @default(uuid())
+
+  testId String
+  test   Test   @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  studentId String?
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: SetNull)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  status       TestAttemptStatus @default(IN_PROGRESS)
+  scorePercent Float?
+  scorePoints  Float?
+  startedAt    DateTime          @default(now())
+  submittedAt  DateTime?
+  gradedAt     DateTime?
+
+  answers       TestAttemptAnswer[]
+  proctorEvents TestProctorEvent[]
+  grade         Grade?
+
+  @@index([testId, studentId])
+  @@index([userId])
+}
+
+model TestAttemptAnswer {
+  id String @id @default(uuid())
+
+  attemptId String
+  attempt   TestAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  questionId String
+  question   TestQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  selectedOptionIds Json?
+  textAnswer        String?
+  isCorrect         Boolean?
+  scorePoints       Float?
+  similarityPercent Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([attemptId, questionId])
+}
+
+model TestProctorEvent {
+  id String @id @default(uuid())
+
+  attemptId String
+  attempt   TestAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  type    ProctorEventType
+  payload Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([attemptId, createdAt])
+}
