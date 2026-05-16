@@ -1,0 +1,36 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main  # или master — какая у тебя ветка?
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/myapp
+
+            git pull origin main
+
+            # Backend
+            cd backend
+            npm install
+            npm run build
+            pm2 restart backend
+
+            # Frontend
+            cd ../frontend
+            npm install
+            npm run build
+            pm2 restart frontend
+
+            echo "✅ Deploy done!"
