@@ -25,13 +25,13 @@ jobs:
             git pull origin main
 
             # Backend
-            cd backend
+            cd ~/Znaniya.KIPO/backend
             npm install
             npm run build
             pm2 restart backend
 
             # Frontend
-            cd ../frontend
+            cd ~/Znaniya.KIPO/frontend
             npm install
             npm run build
             pm2 restart frontend
