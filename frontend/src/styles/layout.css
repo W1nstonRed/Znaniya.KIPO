@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+@import './vars.css';
+@import './utilities.css';
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: linear-gradient(
+        135deg,
+        oklch(9% 0.05 265),
+        oklch(14% 0.14 300),
+        oklch(10% 0.08 230),
+        oklch(15% 0.12 320)
+    );
+    background-size: 400% 400%;
+    animation: bg-shift 12s ease infinite;
+    color: var(--color-text);
+
+    font-family: var(--font-arimo);
+
+    min-height: 100vh;
+
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    transition: all var(--duration-fast) ease-in-out;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p {
+    margin: 0;
+}
+
+/* app.css */
+@keyframes bg-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body {
+        animation: none;
+    }
+}

@@ -1,0 +1,122 @@
+:root {
+    /* --- Фоны (три слоя) --- */
+    --color-bg: oklch(12% 0.03 265); /* страница */
+    --color-surface: oklch(16% 0.03 265); /* карточки, панели */
+    --color-elevated: oklch(20% 0.03 265); /* инпуты, бейджи внутри карточек */
+
+    /* --- Текст --- */
+    --color-text: oklch(96% 0.005 265); /* основной */
+    --color-muted: oklch(55% 0.015 265); /* второстепенный */
+    --color-subtle: oklch(38% 0.01 265); /* совсем тихий, плейсхолдеры */
+
+    /* --- Границы --- */
+    --color-border: oklch(100% 0 0 / 0.07);
+    --color-border-strong: oklch(100% 0 0 / 0.14); /* акцент на границе */
+
+    /* --- Акцент (оранжевый) --- */
+    --color-primary: oklch(70% 0.18 48); /* основной */
+    --color-primary-hover: oklch(65% 0.18 48); /* hover */
+    --color-primary-subtle: oklch(70% 0.18 48 / 0.1); /* фон с акцентом */
+
+    /* --- Семантика --- */
+    --color-danger: oklch(62% 0.24 27);
+    --color-danger-subtle: oklch(62% 0.24 27 / 0.1);
+    --color-success: oklch(70% 0.18 145);
+    --color-success-subtle: oklch(70% 0.18 145 / 0.1);
+
+    /* --- Радиусы --- */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+
+    /* --- Тени --- */
+    --shadow-sm: 0 2px 8px oklch(0% 0 0 / 0.3);
+    --shadow-md: 0 8px 32px oklch(0% 0 0 / 0.45);
+    --shadow-glow: 0 0 24px oklch(70% 0.18 48 / 0.2);
+
+    /* --- Анимация --- */
+    --duration-fast: 120ms;
+    --duration-normal: 240ms;
+    --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* --- Шрифты --- */
+    --font-sans: 'Arimo', ui-sans-serif, system-ui;
+    --font-mono: 'Fira Code', monospace;
+
+    /* --- Типографика --- */
+    --text-xs: 11px;
+    --text-sm: 13px;
+    --text-md: 15px;
+    --text-lg: 18px;
+    --text-xl: 24px;
+    --text-2xl: 32px;
+
+    /* --- Spacing --- */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* --- Focus --- */
+    --focus-ring: oklch(70% 0.18 48 / 0.25);
+    --focus-border: oklch(70% 0.18 48);
+}
+
+@theme {
+    /* Цвета */
+    --color-bg: var(--color-bg);
+    --color-surface: var(--color-surface);
+    --color-elevated: var(--color-elevated);
+
+    --color-foreground: var(--color-text);
+    --color-muted: var(--color-muted);
+    --color-subtle: var(--color-subtle);
+
+    --color-border: var(--color-border);
+    --color-border-strong: var(--color-border-strong);
+
+    --color-primary: var(--color-primary);
+    --color-primary-hover: var(--color-primary-hover);
+    --color-primary-subtle: var(--color-primary-subtle);
+
+    --color-danger: var(--color-danger);
+    --color-danger-subtle: var(--color-danger-subtle);
+    --color-success: var(--color-success);
+    --color-success-subtle: var(--color-success-subtle);
+
+    /* Типографика */
+    --font-sans: var(--font-sans);
+    --font-mono: var(--font-mono);
+
+    /* Spacing */
+    --spacing-1: var(--space-1);
+    --spacing-2: var(--space-2);
+    --spacing-3: var(--space-3);
+    --spacing-4: var(--space-4);
+    --spacing-5: var(--space-5);
+    --spacing-6: var(--space-6);
+    --spacing-8: var(--space-8);
+    --spacing-10: var(--space-10);
+    --spacing-12: var(--space-12);
+
+    /* Радиусы */
+    --radius-sm: var(--radius-sm);
+    --radius-md: var(--radius-md);
+    --radius-lg: var(--radius-lg);
+    --radius-xl: var(--radius-xl);
+
+    /* Тени */
+    --shadow-sm: var(--shadow-sm);
+    --shadow-md: var(--shadow-md);
+    --shadow-glow: var(--shadow-glow);
+
+    /* Анимация */
+    --duration-fast: var(--duration-fast);
+    --duration-normal: var(--duration-normal);
+}
