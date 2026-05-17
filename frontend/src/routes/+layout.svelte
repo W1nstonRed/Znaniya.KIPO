@@ -1,6 +1,7 @@
 <script lang="ts">
     import '../styles/layout.css'
     import favicon from '$lib/assets/favicon.svg'
+    import ToastContainer from '$lib/shared/toast/ToastContainer.svelte'
 
     let { children } = $props()
 </script>
@@ -19,3 +20,5 @@
         </div>
     </div>
 </div>
+
+<ToastContainer />

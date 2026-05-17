@@ -27,20 +27,17 @@
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
-    <div class="content">
+    <div class="error-content">
         <div class="status-badge">
             <span class="dot"></span>
             <span>{data.badge}</span>
         </div>
-
-        <h1 class="code">{status}</h1>
-        <p class="msg">{data.msg}</p>
-        <p class="sub">{data.sub}</p>
-
-        <div class="actions flex flex-col items-center justify-center md:flex-row">
-            <button class="btn btn-primary" onclick={() => history.back()}> ← назад </button>
-
-            <button class="btn btn-ghost" onclick={() => goto(resolve('/'))}> на главную </button>
+        <h1 class="error-code">{status}</h1>
+        <p class="error-msg">{data.msg}</p>
+        <p class="error-sub">{data.sub}</p>
+        <div class="error-actions flex flex-col items-center justify-center md:flex-row">
+            <button class="btn btn-primary" onclick={() => history.back()}>← назад</button>
+            <button class="btn btn-ghost" onclick={() => goto(resolve('/'))}>на главную</button>
         </div>
     </div>
 </div>
