@@ -1,4 +1,8 @@
-import { BadRequestException, ValidationError, ValidationPipe } from "@nestjs/common";
+import {
+  BadRequestException,
+  ValidationError,
+  ValidationPipe,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
@@ -20,8 +24,6 @@ function flattenValidationErrors(errors: ValidationError[]): string[] {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
-
-  app.setGlobalPrefix("api");
   app.use(cookieParser());
   app.enableCors({
     origin: config.get<string>("FRONTEND_ORIGIN", "http://localhost:5173"),

@@ -1,15 +1,22 @@
 <script>
+    import { api } from '$lib/api/client/client'
     import LoginForm from '$lib/components/auth/components/LoginForm.svelte'
     import AnimateComponent from '$lib/shared/animate-component/AnimateComponent.svelte'
-    import Button from '$lib/ui/Button.svelte'
     import Surface from '$lib/ui/Surface.svelte'
 
-    let loading = $state(false)
-    let disabled = $state(false)
+    async function testPush() {
+        try {
+            await api.post('/push/test')
+            console.log('Push отправлен')
+        } catch (e) {
+            console.error('Ошибка:', e)
+        }
+    }
 </script>
 
 <div class="flex h-full w-full items-center justify-center">
     <div class="flex w-full flex-col gap-6 md:w-[50%]">
+        <button onclick={testPush}>test</button>
         <AnimateComponent>
             <div class="glass p-6 text-center text-muted">
                 <div class="header-text">

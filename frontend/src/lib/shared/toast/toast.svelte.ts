@@ -1,4 +1,5 @@
 import { SvelteMap } from 'svelte/reactivity'
+import { v4 as uuidv4 } from 'uuid'
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning'
 
@@ -17,7 +18,7 @@ function createToastsStore() {
     const timers = new SvelteMap<string, ReturnType<typeof setTimeout>>()
 
     function add(type: ToastType, title: string, message?: string, duration = 5000) {
-        const id = crypto.randomUUID()
+        const id = uuidv4()
         items.set(id, {
             id,
             type,
