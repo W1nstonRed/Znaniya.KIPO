@@ -2,9 +2,12 @@
     import { createFormStore } from '$lib/stores/form.svelte'
     import { setContext, untrack, type Snippet } from 'svelte'
 
+    type Values = Record<string, any>
+    type Errors = Record<string, string>
+
     interface Props {
-        initialValues?: Record<string, any>
-        onSubmit: (values: any) => void | Promise<void>
+        initialValues?: Values
+        onSubmit: (values: Values) => void | Errors | Promise<void | Errors>
         children: Snippet
     }
 

@@ -1,7 +1,6 @@
 import { api } from '../client/client.js'
+import type { Fetch } from '../client/types.js'
 import type { PushSubscriptionDto } from './types.js'
-
-type Fetch = typeof globalThis.fetch
 
 export const pushApi = {
     subscribe: (subscription: PushSubscriptionDto, customFetch?: Fetch) =>
