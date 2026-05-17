@@ -87,28 +87,17 @@ export class AuthController {
 
   @Get("me")
   async me(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const token = this.getTokenFromRequest(req);
-    const refreshToken = req.cookies?.[REFRESH_COOKIE_NAME] as
-      | string
-      | undefined;
-    const session = await this.auth.resolveSession(token, refreshToken);
+    const session = await this.auth.resolveSession(
+      this.getTokenFromRequest(req),
+      req.cookies?.[REFRESH_COOKIE_NAME] as string | undefined,
+    );
 
-    if ("accessToken" in session) {
+    if (session.accessToken) {
       setAccessCookie(res, this.config, session.accessToken);
-      setRefreshCookie(res, this.config, session.refreshToken);
-      return {
-        id: session.id,
-        username: session.username,
-        fullName: session.fullName,
-        role: session.role,
-        isAuthenticated: session.isAuthenticated,
-        groupId: session.groupId,
-        studentId: session.studentId,
-        teacherId: session.teacherId,
-      };
+      setRefreshCookie(res, this.config, session.refreshToken!);
     }
 
-    return session;
+    return { user: session.user };
   }
 
   private getTokenFromRequest(req: Request) {

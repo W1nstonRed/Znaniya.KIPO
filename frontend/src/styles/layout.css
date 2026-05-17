@@ -1,42 +1,40 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
 @import './vars.css';
 @import './utilities.css';
 
+/* Base */
 html {
     font-size: 16px;
     scroll-behavior: smooth;
 }
 
 body {
-    background: linear-gradient(
-        135deg,
-        oklch(9% 0.05 265),
-        oklch(14% 0.14 300),
-        oklch(10% 0.08 230),
-        oklch(15% 0.12 320)
-    );
-    background-size: 400% 400%;
-    animation: bg-shift 12s ease infinite;
-    color: var(--color-text);
-
-    font-family: var(--font-arimo);
-
     min-height: 100vh;
+    margin: 0;
+
+    color: var(--color-text);
+    font-family: var(--font-arimo);
 
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
 }
 
 *,
 *::before,
 *::after {
     box-sizing: border-box;
-    transition: all var(--duration-fast) ease-in-out;
 }
 
-body,
 h1,
 h2,
 h3,
@@ -45,21 +43,173 @@ p {
     margin: 0;
 }
 
-/* app.css */
-@keyframes bg-shift {
-    0% {
-        background-position: 0% 50%;
+#app {
+    position: relative;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+/* ===== Background ===== */
+
+.wrap {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+
+    font-family: 'Space Grotesk', sans-serif;
+    color: #fffffe;
+}
+
+.bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 107, 53, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 107, 53, 0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridmove 8s linear infinite;
+}
+
+@keyframes gridmove {
+    from {
+        background-position: 0 0;
     }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
+    to {
+        background-position: 40px 40px;
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    body {
-        animation: none;
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.25;
+    animation: pulse 6s ease-in-out infinite alternate;
+}
+
+.blob1 {
+    width: 340px;
+    height: 340px;
+    background: #f25f4c;
+    top: -80px;
+    left: -100px;
+}
+
+.blob2 {
+    width: 280px;
+    height: 280px;
+    background: #e53170;
+    bottom: -60px;
+    right: -60px;
+    animation-delay: -3s;
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
     }
+    to {
+        transform: scale(1.18);
+    }
+}
+
+/* Error page */
+
+.content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 107, 53, 0.12);
+    border: 1px solid rgba(255, 107, 53, 0.3);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #ff6b35;
+    margin-bottom: 1.5rem;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ff6b35;
+    animation: blink 1.2s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.2;
+    }
+}
+
+.code {
+    font-size: clamp(6rem, 18vw, 11rem);
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff, #a7a9be);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.msg {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-weight: 700;
+}
+
+.sub {
+    color: #a7a9be;
+    max-width: 420px;
+    line-height: 1.6;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 12px 28px;
+    border-radius: 999px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform 0.15s,
+        opacity 0.15s;
+    border: none;
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.btn-primary {
+    background: #ff6b35;
+    color: #0f0e17;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }

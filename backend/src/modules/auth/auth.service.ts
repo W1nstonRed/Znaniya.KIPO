@@ -194,10 +194,15 @@ export class AuthService {
   async resolveSession(
     accessToken?: string,
     refreshToken?: string,
-  ): Promise<AuthResponse | CurrentUser | { user: null }> {
+  ): Promise<{
+    user: CurrentUser | null;
+    accessToken?: string;
+    refreshToken?: string;
+  }> {
     if (accessToken) {
       try {
-        return await this.validateAccessToken(accessToken);
+        const user = await this.validateAccessToken(accessToken);
+        return { user };
       } catch (e) {
         const response =
           e instanceof UnauthorizedException ? e.getResponse() : null;
@@ -216,7 +221,23 @@ export class AuthService {
     if (!refreshToken) return { user: null };
 
     try {
-      return await this.refresh(refreshToken, { rotateRefresh: false });
+      const session = await this.refresh(refreshToken, {
+        rotateRefresh: false,
+      });
+      return {
+        user: {
+          id: session.id,
+          username: session.username,
+          fullName: session.fullName,
+          role: session.role,
+          isAuthenticated: session.isAuthenticated,
+          groupId: session.groupId,
+          studentId: session.studentId,
+          teacherId: session.teacherId,
+        },
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+      };
     } catch (e) {
       this.logger.warn(`Failed to refresh session: ${(e as Error).message}`);
       return { user: null };
