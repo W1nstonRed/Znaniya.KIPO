@@ -4,6 +4,7 @@
     max-width: var(--container-width);
     margin-inline: auto;
     padding-inline: var(--space-4);
+    position: relative;
 }
 
 .app-container {
@@ -42,5 +43,40 @@
 
     @supports not (backdrop-filter: blur(1px)) {
         background: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.25;
+    z-index: -1;
+    animation: pulse 6s ease-in-out infinite alternate;
+}
+
+.blob1 {
+    width: 340px;
+    height: 340px;
+    background: #f25f4c;
+    top: -80px;
+    left: -100px;
+}
+
+.blob2 {
+    width: 280px;
+    height: 280px;
+    background: #e53170;
+    bottom: -60px;
+    right: -60px;
+    animation-delay: -3s;
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.18);
     }
 }

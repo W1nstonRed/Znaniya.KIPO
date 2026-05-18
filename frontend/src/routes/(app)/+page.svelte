@@ -6,9 +6,7 @@
     import Button from '$lib/ui/Button.svelte'
 
     let user = $derived(page.data.user)
-    $effect(() => {
-        console.log('effect', user)
-    })
+
     async function testPush() {
         try {
             await api.post('/push/test')
