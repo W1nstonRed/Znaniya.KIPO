@@ -15,8 +15,10 @@
     let currentY = $state(0)
     let dragging = $state(false)
     let sheetDragging = $state(false)
+    let intentConfirmed = $state(false)
 
     const CLOSE_THRESHOLD = 120
+    const INTENT_THRESHOLD = 8
 
     $effect(() => {
         if (open) {
@@ -25,6 +27,7 @@
             document.body.style.overflow = ''
             dragging = false
             sheetDragging = false
+            intentConfirmed = false
             currentY = 0
         }
     })
@@ -32,6 +35,7 @@
     function onPointerDown(e: PointerEvent) {
         dragging = true
         sheetDragging = true
+        intentConfirmed = false
         startY = e.clientY
         currentY = 0
         ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
@@ -39,7 +43,15 @@
 
     function onPointerMove(e: PointerEvent) {
         if (!dragging) return
+        if (e.pointerType === 'mouse' && e.buttons !== 1) {
+            onPointerUp()
+            return
+        }
         const delta = e.clientY - startY
+        if (!intentConfirmed) {
+            if (Math.abs(delta) < INTENT_THRESHOLD) return
+            intentConfirmed = true
+        }
         currentY = Math.max(0, delta)
     }
 
@@ -47,6 +59,7 @@
         if (!dragging) return
         dragging = false
         sheetDragging = false
+        intentConfirmed = false
         if (currentY >= CLOSE_THRESHOLD) {
             onclose()
         }
@@ -59,13 +72,22 @@
         currentY = 0
         dragging = false
         sheetDragging = false
+        intentConfirmed = false
         ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
     }
 
     function onContentPointerMove(e: PointerEvent) {
+        if (e.pointerType === 'mouse' && e.buttons !== 1) {
+            onContentPointerUp()
+            return
+        }
         const delta = e.clientY - startY
 
         if (sheetDragging) {
+            if (!intentConfirmed) {
+                if (Math.abs(delta) < INTENT_THRESHOLD) return
+                intentConfirmed = true
+            }
             e.preventDefault()
             currentY = Math.max(0, delta)
             return
@@ -73,9 +95,10 @@
 
         if (!scrollEl) return
 
-        if (delta > 0 && scrollEl.scrollTop === 0) {
+        if (delta > INTENT_THRESHOLD && scrollEl.scrollTop === 0) {
             sheetDragging = true
             dragging = true
+            intentConfirmed = true
             e.preventDefault()
             currentY = Math.max(0, delta)
         }
@@ -85,6 +108,7 @@
         if (!dragging) return
         dragging = false
         sheetDragging = false
+        intentConfirmed = false
         if (currentY >= CLOSE_THRESHOLD) {
             onclose()
         }

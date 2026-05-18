@@ -1,4 +1,4 @@
-import { CalendarDays, Server, Users, type House } from '@lucide/svelte'
+import { CalendarDays, House, Server, Users } from '@lucide/svelte'
 
 export type NavItem = {
     id: number
@@ -9,7 +9,8 @@ export type NavItem = {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-    { id: 1, href: '/', label: 'Группы', icon: Users, authOnly: false },
-    { id: 2, href: '/schedule', label: 'Расписание', icon: CalendarDays, authOnly: false },
-    { id: 3, href: '/files', label: 'Файловый обменник', icon: Server, authOnly: true },
+    { id: 1, href: '/', label: 'Главная', icon: House, authOnly: false },
+    { id: 2, href: '/groups', label: 'Группы', icon: Users, authOnly: false },
+    { id: 3, href: '/schedule', label: 'Расписание', icon: CalendarDays, authOnly: false },
+    { id: 4, href: '/files', label: 'Файловый обменник', icon: Server, authOnly: true },
 ]
