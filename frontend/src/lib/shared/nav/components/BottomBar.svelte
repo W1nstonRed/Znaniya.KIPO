@@ -12,13 +12,13 @@
     const visibleItems = $derived(user ? NAV_ITEMS : NAV_ITEMS.filter(i => !i.authOnly))
 </script>
 
-<BottomSheet {open} bind:open onclose={() => (open = false)}>
+<BottomSheet bind:open onclose={() => (open = false)}>
     <MiniProfile />
 </BottomSheet>
 
-<div class="fixed bottom-5 w-full md:hidden">
+<div class="fixed bottom-10 w-full md:hidden">
     <div class="flex items-center justify-center gap-2 px-4">
-        <div class="glass flex items-center gap-1 p-1.5">
+        <div class="glass flex items-center gap-2 p-2">
             {#each visibleItems as item (item.id)}
                 <BottomItem
                     {item}
@@ -32,9 +32,9 @@
             onclick={() => (open = true)}
             class="
                 glass glass-circle
-                flex size-[44px] shrink-0 items-center justify-center
-                text-[var(--color-muted)] transition-all duration-[var(--duration-normal)]
-                hover:text-[var(--color-text)]
+                duration-normal flex size-11 shrink-0 items-center
+                justify-center text-muted transition-all
+                hover:text-foreground
                 active:scale-[0.95]
             "
             aria-label="Profile"
