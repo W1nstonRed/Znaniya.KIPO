@@ -32,7 +32,7 @@
             onclick={() => (open = true)}
             class="
                 glass glass-circle
-                duration-normal flex size-11 shrink-0 items-center
+                duration-normal flex size-12 shrink-0 items-center
                 justify-center text-muted transition-all
                 hover:text-foreground
                 active:scale-[0.95]
