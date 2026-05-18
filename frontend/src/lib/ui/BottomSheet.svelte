@@ -14,11 +14,21 @@
     let startY = $state(0)
     let currentY = $state(0)
     let dragging = $state(false)
-    let sheetDragging = $state(false) // тянем именно шторку (не скролл)
+    let sheetDragging = $state(false)
 
     const CLOSE_THRESHOLD = 120
 
-    // ручка — всегда тянет шторку
+    $effect(() => {
+        if (open) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = ''
+            dragging = false
+            sheetDragging = false
+            currentY = 0
+        }
+    })
+
     function onPointerDown(e: PointerEvent) {
         dragging = true
         sheetDragging = true
@@ -43,14 +53,12 @@
         currentY = 0
     }
 
-    // контент — тянет шторку только если scrollTop === 0 и движение вниз
     function onContentPointerDown(e: PointerEvent) {
         if (!scrollEl) return
         startY = e.clientY
         currentY = 0
         dragging = false
         sheetDragging = false
-        // захватываем pointer чтобы получать move/up даже если курсор ушёл
         ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
     }
 
@@ -58,7 +66,6 @@
         const delta = e.clientY - startY
 
         if (sheetDragging) {
-            // уже решили тянуть шторку
             e.preventDefault()
             currentY = Math.max(0, delta)
             return
@@ -67,13 +74,11 @@
         if (!scrollEl) return
 
         if (delta > 0 && scrollEl.scrollTop === 0) {
-            // тянем вниз и скролл в самом верху — перехватываем
             sheetDragging = true
             dragging = true
             e.preventDefault()
             currentY = Math.max(0, delta)
         }
-        // иначе — не мешаем нативному скроллу
     }
 
     function onContentPointerUp() {
@@ -85,17 +90,8 @@
         }
         currentY = 0
     }
-
-    $effect(() => {
-        if (!open) {
-            dragging = false
-            sheetDragging = false
-            currentY = 0
-        }
-    })
 </script>
 
-<!-- оверлей -->
 {#if open}
     <div
         role="presentation"
@@ -104,7 +100,6 @@
     ></div>
 {/if}
 
-<!-- шторка -->
 <div
     bind:this={sheet}
     class="fixed right-0 bottom-0 left-0 z-50"
@@ -118,7 +113,6 @@
         class="glass mx-3 mb-3 flex max-h-[80dvh] flex-col"
         style="border-radius: var(--radius-xl)"
     >
-        <!-- ручка -->
         <div
             role="presentation"
             class="shrink-0 cursor-grab touch-none py-3 active:cursor-grabbing"
@@ -130,11 +124,11 @@
             <div class="mx-auto w-15 rounded-2xl bg-white/20 p-1"></div>
         </div>
 
-        <!-- скроллящийся контент -->
         <div
             role="presentation"
             bind:this={scrollEl}
-            class="flex-1 touch-pan-y overflow-y-auto overscroll-contain px-6 pb-6"
+            class="flex-1 overflow-y-auto overscroll-contain px-6 pb-6"
+            style="touch-action: pan-y"
             onpointerdown={onContentPointerDown}
             onpointermove={onContentPointerMove}
             onpointerup={onContentPointerUp}
