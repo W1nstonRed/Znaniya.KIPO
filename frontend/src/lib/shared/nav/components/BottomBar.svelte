@@ -12,7 +12,7 @@
     const visibleItems = $derived(user ? NAV_ITEMS : NAV_ITEMS.filter(i => !i.authOnly))
 </script>
 
-<BottomSheet {open} onclose={() => (open = false)}>
+<BottomSheet {open} bind:open onclose={() => (open = false)}>
     <MiniProfile />
 </BottomSheet>
 

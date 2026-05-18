@@ -85,6 +85,14 @@
         }
         currentY = 0
     }
+
+    $effect(() => {
+        if (!open) {
+            dragging = false
+            sheetDragging = false
+            currentY = 0
+        }
+    })
 </script>
 
 <!-- оверлей -->
@@ -100,6 +108,7 @@
 <div
     bind:this={sheet}
     class="fixed right-0 bottom-0 left-0 z-50"
+    class:pointer-events-none={!open}
     style="
         transform: translateY({open ? currentY + 'px' : '100%'});
         transition: {dragging ? 'none' : 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)'};
