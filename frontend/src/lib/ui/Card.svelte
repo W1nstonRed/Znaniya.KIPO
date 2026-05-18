@@ -13,7 +13,7 @@
 </script>
 
 <div class="surface surface--{variant} {className}">
-    <div class="surface-content w-full">
+    <div class="surface-content">
         {@render children()}
     </div>
 </div>

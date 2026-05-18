@@ -40,12 +40,12 @@
         'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:outline-none',
         'active:scale-[0.97]',
 
-        size === 'sm' && 'h-9 rounded-xl px-3 text-sm',
-        size === 'md' && 'h-11 rounded-xl px-5 text-sm',
-        size === 'lg' && 'h-12 rounded-2xl px-6 text-base',
+        size === 'sm' && 'rounded-xl px-1 text-sm',
+        size === 'md' && 'rounded-xl p-3 text-sm',
+        size === 'lg' && 'rounded-2xl px-6 text-base',
 
         size === 'sm' && '[&>svg]:h-3 [&>svg]:w-3',
-        size === 'md' && '[&>svg]:h-4 [&>svg]:w-4',
+        size === 'md' && '[&>svg]:h-6 [&>svg]:w-6',
         size === 'lg' && '[&>svg]:h-5 [&>svg]:w-5',
 
         variant === 'primary' && [
@@ -56,13 +56,13 @@
         ],
 
         variant === 'danger' && [
-            'bg-danger text-white',
+            'rounded-full bg-danger/30 text-danger',
             'shadow-[0_0_20px_oklch(0.577_0.245_27.325/0.3)]',
-            'hover:brightness-110',
+            'hover:brightness-170',
         ],
 
         variant === 'icon' && [
-            'rounded-xl border border-white/10 bg-white/5 text-primary backdrop-blur-md',
+            'rounded-full border border-white/10 bg-white/5 text-primary backdrop-blur-md',
             'hover:border-white/20 hover:bg-white/10',
         ],
 

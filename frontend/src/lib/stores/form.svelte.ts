@@ -1,5 +1,5 @@
-type Values = Record<string, any>
-type Errors = Record<string, string>
+export type Values = Record<string, any>
+export type Errors = Record<string, string>
 
 export function createFormStore(initial: Values = {}) {
     const values = $state<Values>({ ...initial })

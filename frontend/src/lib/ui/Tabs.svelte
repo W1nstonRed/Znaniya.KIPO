@@ -27,7 +27,7 @@
     })
 </script>
 
-<div class="inline-flex h-full flex-col gap-4">
+<div class="flex flex-col items-center justify-center gap-4">
     <div
         class="relative flex flex-wrap items-center justify-center gap-1 rounded-2xl border border-white/8 bg-white/5 p-1.5 backdrop-blur-md"
     >
@@ -48,10 +48,7 @@
     </div>
 
     {#key active}
-        <div
-            class="flex h-full min-h-48 items-center justify-center overflow-hidden"
-            in:fade={{ duration: 150 }}
-        >
+        <div class="flex h-full min-h-48 items-center justify-center" in:fade={{ duration: 150 }}>
             {@render children()}
         </div>
     {/key}

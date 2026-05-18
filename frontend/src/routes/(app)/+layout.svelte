@@ -1,5 +1,4 @@
 <script lang="ts">
-    import '../../styles/layout.css'
     import favicon from '$lib/assets/favicon.svg'
     import { page as pageData } from '$app/state'
     import { subscribeToPush } from '$lib/push'
@@ -9,6 +8,7 @@
     import { page } from '$app/stores'
     import { goto } from '$app/navigation'
     import { resolve } from '$app/paths'
+    import BottomBar from '$lib/shared/nav/components/BottomBar.svelte'
 
     let { children } = $props()
 
@@ -49,4 +49,9 @@
     <link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+<div class="app-container">
+    <div class="page-container">
+        {@render children()}
+    </div>
+</div>
+<BottomBar />

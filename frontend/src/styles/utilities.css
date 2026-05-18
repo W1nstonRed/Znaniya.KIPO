@@ -80,3 +80,30 @@
         transform: scale(1.18);
     }
 }
+
+.glass-circle {
+    border-radius: 100%;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(100% 0 0 / 0.15) transparent;
+}
+
+/* webkit (chrome, safari) */
+*::-webkit-scrollbar {
+    width: 4px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: oklch(100% 0 0 / 0.15);
+    border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: oklch(100% 0 0 / 0.3);
+}

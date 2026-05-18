@@ -11,7 +11,6 @@
 
     async function submit(values: Record<string, any>) {
         const { username, password } = values
-        console.log('submit', values)
         if (!username.trim() || !password) return
         try {
             await authApi.login({ username, password })

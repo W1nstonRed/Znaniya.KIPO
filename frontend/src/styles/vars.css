@@ -29,6 +29,7 @@
     --radius-md: 12px;
     --radius-lg: 18px;
     --radius-xl: 24px;
+    --radius-full: 100%;
 
     /* --- Тени --- */
     --shadow-sm: 0 2px 8px oklch(0% 0 0 / 0.3);
@@ -113,6 +114,7 @@
     --radius-md: var(--radius-md);
     --radius-lg: var(--radius-lg);
     --radius-xl: var(--radius-xl);
+    --radius-full: var(--radius-full);
 
     /* Тени */
     --shadow-sm: var(--shadow-sm);
