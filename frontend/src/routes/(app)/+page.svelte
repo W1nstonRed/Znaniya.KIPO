@@ -1,53 +1,28 @@
 <script>
-    import { api } from '$lib/api/client/client'
-    import LoginForm from '$lib/components/auth/components/LoginForm.svelte'
-    import AnimateComponent from '$lib/shared/animate-component/AnimateComponent.svelte'
-    import Surface from '$lib/ui/Surface.svelte'
+    import { goto } from '$app/navigation'
+    import { resolve } from '$app/paths'
+    import { page } from '$app/state'
+    import Button from '$lib/ui/Button.svelte'
 
-    async function testPush() {
-        try {
-            await api.post('/push/test')
-            console.log('Push отправлен')
-        } catch (e) {
-            console.error('Ошибка:', e)
-        }
-    }
+    let user = $derived(page.data.user)
 </script>
 
-<div class="flex h-full w-full items-center justify-center">
-    <div class="flex w-full flex-col gap-6 md:w-[50%]">
-        <button onclick={testPush}>test</button>
-        <AnimateComponent>
-            <div class="glass p-6 text-center text-muted">
-                <div class="header-text">
-                    Добро пожаловать в <span class="text-lg text-foreground"
-                        >Знания.<span class="text-primary">КИПО</span></span
-                    >
-                </div>
-            </div>
-        </AnimateComponent>
-        <div class="flex w-full flex-1 flex-col gap-6 md:flex-row">
-            <AnimateComponent>
-                <Surface variant="purple" class="w-full">
-                    <span>Авторизация</span>
-                    <LoginForm />
-                </Surface>
-            </AnimateComponent>
-            <AnimateComponent>
-                <div class="features glass flex flex-col gap-6 p-6">
-                    <Surface variant="orange">
-                        <div class="text-2xl">test message</div>
-                    </Surface>
+<Button
+    onClick={() => {
+        goto(resolve('/auth'))
+    }}
+    variant="primary"
+>
+    К Авторизации
+</Button>
 
-                    <Surface variant="orange">
-                        <div class="">test message</div>
-                    </Surface>
-
-                    <Surface variant="orange">
-                        <div class="text-2xl">test message</div>
-                    </Surface>
-                </div>
-            </AnimateComponent>
-        </div>
-    </div>
-</div>
+{#if user}
+    <Button
+        onClick={() => {
+            goto(resolve('/auth/logout'))
+        }}
+        variant="primary"
+    >
+        Выйти {user.username}
+    </Button>
+{/if}
