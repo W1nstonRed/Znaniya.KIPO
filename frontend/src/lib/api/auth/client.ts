@@ -7,7 +7,8 @@ export const authApi = {
         api.post<AuthResponse>('/auth/login', dto, { fetch }),
     register: (dto: RegisterRequest, fetch?: Fetch) =>
         api.post<AuthResponse>('/auth/register', dto, { fetch }),
-    me: (fetch?: Fetch) => api.get<MeResponse>('/auth/me', { fetch }),
+    me: (fetch?: Fetch, cookie?: string) =>
+        api.get<MeResponse>('/auth/me', { fetch, headers: cookie ? { cookie } : {} }),
     logout: (fetch?: Fetch) => api.post<{ ok: true }>('/auth/logout', undefined, { fetch }),
     refresh: (fetch?: Fetch) => api.post<AuthResponse>('/auth/refresh', undefined, { fetch }),
 }

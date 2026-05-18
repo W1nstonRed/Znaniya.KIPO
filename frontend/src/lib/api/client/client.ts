@@ -27,6 +27,9 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     if (!headers.has('Content-Type')) {
         headers.set('Content-Type', 'application/json')
     }
+    if (options.headers) {
+        Object.entries(options.headers).forEach(([k, v]) => headers.set(k, v))
+    }
     let response: Response
 
     try {
