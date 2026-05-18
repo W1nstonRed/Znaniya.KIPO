@@ -14,11 +14,14 @@
     let startY = $state(0)
     let currentY = $state(0)
     let dragging = $state(false)
+    let sheetDragging = $state(false) // тянем именно шторку (не скролл)
 
     const CLOSE_THRESHOLD = 120
 
+    // ручка — всегда тянет шторку
     function onPointerDown(e: PointerEvent) {
         dragging = true
+        sheetDragging = true
         startY = e.clientY
         currentY = 0
         ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
@@ -33,33 +36,54 @@
     function onPointerUp() {
         if (!dragging) return
         dragging = false
+        sheetDragging = false
         if (currentY >= CLOSE_THRESHOLD) {
             onclose()
         }
         currentY = 0
     }
 
+    // контент — тянет шторку только если scrollTop === 0 и движение вниз
     function onContentPointerDown(e: PointerEvent) {
         if (!scrollEl) return
-        if (scrollEl.scrollTop === 0) {
-            dragging = true
-            startY = e.clientY
-            currentY = 0
-            ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
-        }
+        startY = e.clientY
+        currentY = 0
+        dragging = false
+        sheetDragging = false
+        // захватываем pointer чтобы получать move/up даже если курсор ушёл
+        ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
     }
 
     function onContentPointerMove(e: PointerEvent) {
-        if (!dragging) return
         const delta = e.clientY - startY
-        if (delta > 0) {
+
+        if (sheetDragging) {
+            // уже решили тянуть шторку
             e.preventDefault()
-            currentY = delta
+            currentY = Math.max(0, delta)
+            return
         }
+
+        if (!scrollEl) return
+
+        if (delta > 0 && scrollEl.scrollTop === 0) {
+            // тянем вниз и скролл в самом верху — перехватываем
+            sheetDragging = true
+            dragging = true
+            e.preventDefault()
+            currentY = Math.max(0, delta)
+        }
+        // иначе — не мешаем нативному скроллу
     }
 
     function onContentPointerUp() {
-        onPointerUp()
+        if (!dragging) return
+        dragging = false
+        sheetDragging = false
+        if (currentY >= CLOSE_THRESHOLD) {
+            onclose()
+        }
+        currentY = 0
     }
 </script>
 
@@ -101,7 +125,7 @@
         <div
             role="presentation"
             bind:this={scrollEl}
-            class="flex-1 overflow-y-auto overscroll-contain px-6 pb-6"
+            class="flex-1 touch-pan-y overflow-y-auto overscroll-contain px-6 pb-6"
             onpointerdown={onContentPointerDown}
             onpointermove={onContentPointerMove}
             onpointerup={onContentPointerUp}
