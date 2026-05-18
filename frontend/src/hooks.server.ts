@@ -7,6 +7,7 @@ import type { Handle } from '@sveltejs/kit'
 async function resolveUser(fetch: Fetch): Promise<CurrentUser | null> {
     try {
         const res = await authApi.me(fetch)
+        console.log('resolveUser', res)
         return res.user
     } catch (e) {
         if (e instanceof NetworkError) return null
