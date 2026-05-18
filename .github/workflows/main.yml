@@ -34,8 +34,8 @@ jobs:
 
             # Frontend
             cd ~/Znaniya.KIPO/frontend
-            npm install
-            npm run build
+            pnpm install
+            pnpm build
             pm2 restart frontend
 
             echo "✅ Deploy done!"
