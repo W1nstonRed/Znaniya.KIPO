@@ -2,13 +2,14 @@
     import favicon from '$lib/assets/favicon.svg'
     import { page as pageData } from '$app/state'
     import { subscribeToPush } from '$lib/push'
-    import { pushApi } from '$lib/api/push/client'
     import type { PushSubscriptionDto } from '$lib/api/push/types'
     import { derived } from 'svelte/store'
     import { page } from '$app/stores'
     import { goto } from '$app/navigation'
     import { resolve } from '$app/paths'
     import BottomBar from '$lib/shared/nav/components/BottomBar.svelte'
+    import { pushApi } from '$lib/api/push/client'
+    import SideBar from '$lib/shared/nav/components/SideBar.svelte'
 
     let { children } = $props()
 
@@ -26,11 +27,9 @@
 
     $effect(() => {
         if (!user) return
-
         subscribeToPush()
             .then(sub => {
                 if (!sub) return
-
                 const dto: PushSubscriptionDto = {
                     endpoint: sub.endpoint,
                     keys: {
@@ -38,7 +37,6 @@
                         auth: btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth')!))),
                     },
                 }
-
                 return pushApi.subscribe(dto)
             })
             .catch(e => console.error('Push subscribe failed:', e))
@@ -50,8 +48,33 @@
 </svelte:head>
 
 <div class="app-container">
-    <div class="page-container">
-        {@render children()}
+    <!-- Sidebar только на десктопе -->
+    <div class="hidden md:block">
+        <SideBar />
+    </div>
+
+    <!-- Контент со сдвигом на десктопе -->
+    <div class="content-wrap">
+        <div class="page-container">
+            {@render children()}
+        </div>
+        <div class="block md:hidden">
+            <BottomBar />
+        </div>
     </div>
 </div>
-<BottomBar />
+
+<!-- BottomBar только на мобиле -->
+
+<style>
+    .content-wrap {
+        width: 100%;
+    }
+
+    @media (min-width: 768px) {
+        .content-wrap {
+            padding-left: 64px; /* ширина свёрнутого sidebar */
+            transition: padding-left 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+    }
+</style>
