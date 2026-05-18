@@ -3,52 +3,54 @@
     import type { NavItem } from '../items.config'
 
     interface Props {
-        variant?: 'default' | 'icon' | 'ghost'
-        disabled?: boolean
-        class?: string
-        onClick?: () => void
-        type?: 'button' | 'submit'
         item: NavItem
+        variant?: 'default' | 'active'
+        disabled?: boolean
+        onClick?: () => void
     }
 
-    let {
-        variant = 'default',
-        disabled = false,
-        class: className,
-        onClick,
-        type = 'button',
-        item,
-    }: Props = $props()
+    const { item, variant = 'default', disabled = false, onClick = () => {} }: Props = $props()
+
+    const isActive = $derived(variant === 'active')
 </script>
 
 <button
-    {type}
     onclick={onClick}
-    {disabled}
+    aria-label={item.label}
     class={cn(
-        'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200',
-        'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:outline-none',
-        'active:scale-[0.97]',
+        // Убираем gap и padding — центрируем через flex
+        'relative flex items-center justify-center overflow-hidden',
+        'h-10 rounded-[var(--radius-lg)]',
+        'font-medium text-[var(--text-sm)]',
+        'transition-all duration-300 ease-[var(--ease-default)]',
+        'focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:outline-none',
+        'cursor-pointer select-none active:scale-[0.95]',
+        'p-0', // явно сбрасываем padding
 
-        variant === 'default' && [
-            'rounded-md border border-border bg-surface px-2 py-2 text-foreground',
-            'hover:bg-elevated',
+        isActive
+            ? 'w-auto gap-1.5 pr-3 pl-2.5 text-[var(--color-primary)]'
+            : 'w-10 text-[var(--color-muted)]',
+
+        !isActive && 'hover:bg-white/8 hover:text-[var(--color-text)]',
+        isActive && [
+            'bg-[var(--color-primary-subtle)]',
+            'border border-[oklch(70%_0.18_48_/_0.25)]',
+            'shadow-[0_0_12px_oklch(70%_0.18_48_/_0.15)]',
         ],
 
-        variant === 'icon' && [
-            'rounded-full border border-white/10 bg-white/5 p-2 text-primary backdrop-blur-md',
-            'hover:border-white/20 hover:bg-white/10',
-        ],
-
-        variant === 'ghost' && ['bg-transparent text-muted hover:bg-white/5 hover:text-foreground'],
-
-        disabled && 'cursor-not-allowed opacity-40 shadow-none',
-
-        className,
+        disabled && 'pointer-events-none cursor-not-allowed opacity-40',
     )}
+    {disabled}
 >
-    <div class="flex max-w-10 flex-col items-center justify-center truncate">
-        <item.icon size={12} />
-        <p class="text-sm">{item.label}</p>
-    </div>
+    <!-- Иконка без обёртки span — напрямую, flex сам центрирует -->
+    <item.icon size={18} strokeWidth={isActive ? 2.25 : 1.75} />
+
+    <span
+        class={cn(
+            'overflow-hidden whitespace-nowrap transition-all duration-300 ease-[var(--ease-default)]',
+            isActive ? 'max-w-[100px] opacity-100' : 'max-w-0 opacity-0',
+        )}
+    >
+        {item.label}
+    </span>
 </button>
