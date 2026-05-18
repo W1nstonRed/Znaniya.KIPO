@@ -17,7 +17,7 @@
 </BottomSheet>
 
 <div class="fixed bottom-10 w-full md:hidden">
-    <div class="flex items-center justify-center gap-2 px-4">
+    <div class="flex items-center justify-center gap-4 px-4">
         <div class="glass flex items-center gap-2 p-2">
             {#each visibleItems as item (item.id)}
                 <BottomItem
@@ -32,7 +32,7 @@
             onclick={() => (open = true)}
             class="
                 glass glass-circle
-                duration-normal flex size-14 shrink-0 items-center
+                duration-normal flex size-16 shrink-0 items-center
                 justify-center text-muted transition-all
                 hover:text-foreground
                 active:scale-[0.95]
