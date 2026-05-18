@@ -10,6 +10,7 @@
     let { open = $bindable(), onclose, children }: Props = $props()
 
     let sheet = $state<HTMLDivElement>()
+    let scrollEl = $state<HTMLDivElement>()
     let startY = $state(0)
     let currentY = $state(0)
     let dragging = $state(false)
@@ -26,7 +27,7 @@
     function onPointerMove(e: PointerEvent) {
         if (!dragging) return
         const delta = e.clientY - startY
-        currentY = Math.max(0, delta) // только вниз
+        currentY = Math.max(0, delta)
     }
 
     function onPointerUp() {
@@ -36,6 +37,29 @@
             onclose()
         }
         currentY = 0
+    }
+
+    function onContentPointerDown(e: PointerEvent) {
+        if (!scrollEl) return
+        if (scrollEl.scrollTop === 0) {
+            dragging = true
+            startY = e.clientY
+            currentY = 0
+            ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+        }
+    }
+
+    function onContentPointerMove(e: PointerEvent) {
+        if (!dragging) return
+        const delta = e.clientY - startY
+        if (delta > 0) {
+            e.preventDefault()
+            currentY = delta
+        }
+    }
+
+    function onContentPointerUp() {
+        onPointerUp()
     }
 </script>
 
@@ -61,7 +85,7 @@
         class="glass mx-3 mb-3 flex max-h-[80dvh] flex-col"
         style="border-radius: var(--radius-xl)"
     >
-        <!-- ручка — зона для свайпа -->
+        <!-- ручка -->
         <div
             role="presentation"
             class="shrink-0 cursor-grab touch-none py-3 active:cursor-grabbing"
@@ -74,7 +98,15 @@
         </div>
 
         <!-- скроллящийся контент -->
-        <div class="flex-1 overflow-y-auto overscroll-contain px-6 pb-6">
+        <div
+            role="presentation"
+            bind:this={scrollEl}
+            class="flex-1 overflow-y-auto overscroll-contain px-6 pb-6"
+            onpointerdown={onContentPointerDown}
+            onpointermove={onContentPointerMove}
+            onpointerup={onContentPointerUp}
+            onpointercancel={onContentPointerUp}
+        >
             {@render children()}
         </div>
     </div>
