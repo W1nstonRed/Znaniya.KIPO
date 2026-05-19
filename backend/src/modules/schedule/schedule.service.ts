@@ -111,10 +111,11 @@ export class ScheduleService {
 
   async getTeacherSchedule(teacherId: number, date: string) {
     const id = this.normalizeExternalId(teacherId, "TEACHER_NOT_FOUND");
-    const externalTeacher = await this.prisma.scheduleTeacherExternal.findUnique({
-      where: { id },
-      include: { teacher: { include: { externalTeachers: true } } },
-    });
+    const externalTeacher =
+      await this.prisma.scheduleTeacherExternal.findUnique({
+        where: { id },
+        include: { teacher: { include: { externalTeachers: true } } },
+      });
 
     const externalTeachers = externalTeacher?.teacher?.externalTeachers.length
       ? externalTeacher.teacher.externalTeachers
@@ -200,7 +201,10 @@ export class ScheduleService {
     const externalGroupId = data.externalGroupId ?? data.scheduleGroupId;
     const externalTeacherId = data.externalTeacherId ?? data.scheduleTeacherId;
 
-    if ((externalGroupId && externalTeacherId) || (!externalGroupId && !externalTeacherId)) {
+    if (
+      (externalGroupId && externalTeacherId) ||
+      (!externalGroupId && !externalTeacherId)
+    ) {
       throw new BadRequestException(
         apiError(
           "SCHEDULE_FAVORITE_TARGET_REQUIRED",
@@ -265,7 +269,11 @@ export class ScheduleService {
       const key = `group:${favorite.externalGroupId}`;
       if (checked.has(key)) continue;
       checked.add(key);
-      await this.safeCheckSingleSchedule("group", favorite.externalGroupId, today);
+      await this.safeCheckSingleSchedule(
+        "group",
+        favorite.externalGroupId,
+        today,
+      );
     }
 
     for (const favorite of teacherFavorites) {
@@ -357,7 +365,11 @@ export class ScheduleService {
 
     const name = await this.getScheduleEntityName(type, externalId);
     const body = formatDiffMessage(diffs);
-    const recipients = await this.getScheduleRecipients(type, externalId, diffs);
+    const recipients = await this.getScheduleRecipients(
+      type,
+      externalId,
+      diffs,
+    );
 
     await this.notifications.createForUsers(recipients, {
       type: "schedule_change",
@@ -401,7 +413,8 @@ export class ScheduleService {
     const teachers = new Map<number, string>();
 
     if (schedule.group) groups.set(schedule.group.id, schedule.group.name);
-    if (schedule.teacher) teachers.set(schedule.teacher.id, schedule.teacher.fio);
+    if (schedule.teacher)
+      teachers.set(schedule.teacher.id, schedule.teacher.fio);
 
     for (const lesson of schedule.lessons) {
       for (const unionGroup of lesson.unionGroups) {
@@ -434,7 +447,10 @@ export class ScheduleService {
 
   private async persistLessons(schedule: ExternalSchedule) {
     for (const externalLesson of schedule.lessons) {
-      const groupIds = await this.resolveLessonGroupIds(schedule, externalLesson);
+      const groupIds = await this.resolveLessonGroupIds(
+        schedule,
+        externalLesson,
+      );
       if (groupIds.length === 0) continue;
 
       const subject = externalLesson.subject?.name
@@ -536,10 +552,12 @@ export class ScheduleService {
   private async resolveTeacherIds(lesson: ExternalLesson) {
     if (lesson.teachers.length === 0) return [];
 
-    const externalTeachers = await this.prisma.scheduleTeacherExternal.findMany({
-      where: { id: { in: lesson.teachers.map((teacher) => teacher.id) } },
-      select: { id: true, teacherId: true },
-    });
+    const externalTeachers = await this.prisma.scheduleTeacherExternal.findMany(
+      {
+        where: { id: { in: lesson.teachers.map((teacher) => teacher.id) } },
+        select: { id: true, teacherId: true },
+      },
+    );
 
     return externalTeachers
       .filter((teacher) => teacher.teacherId)
@@ -908,7 +926,10 @@ export class ScheduleService {
   }
 
   private get publicationId() {
-    return this.config.get<string>("SCHEDULE_PUBLICATION_ID", DEFAULT_PUBLICATION_ID);
+    return this.config.get<string>(
+      "SCHEDULE_PUBLICATION_ID",
+      DEFAULT_PUBLICATION_ID,
+    );
   }
 
   private get baseUrl() {

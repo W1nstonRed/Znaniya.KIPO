@@ -1,5 +1,9 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/forms';
+
+@plugin '@tailwindcss/forms' {
+    strategy: class;
+}
+
 @plugin '@tailwindcss/typography';
 
 @import './vars.css';
@@ -13,13 +17,13 @@ html {
 body {
     min-height: 100vh;
     margin: 0;
-    color: var(--color-text);
-    font-family: var(--font-sans);
-    background-color: oklch(10% 0.03 265);
+    overflow-x: hidden;
+    color: var(--app-text);
+    font-family: var(--app-font-sans);
+    background-color: var(--app-bg);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    user-select: none;
-    transition: all var(--duration-normal) ease-in-out;
+    transition: all var(--app-duration-normal) ease-in-out;
 }
 
 *,
@@ -37,135 +41,60 @@ p {
 }
 
 #app {
+    min-height: 100vh;
     position: relative;
     overflow-x: hidden;
-    height: 100%;
 }
 
 .wrap {
-    min-height: 100vh;
+    min-height: 100dvh;
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
-    /* overflow: hidden; — убираем отсюда */
-    color: var(--color-text);
-    font-family: var(--font-sans);
+    display: flex;
+    justify-content: center;
+    color: var(--app-text);
+    font-family: var(--app-font-sans);
+    isolation: isolate;
 }
 
-/* новый контейнер для блобов */
 .wrap-blobs {
     position: fixed;
     inset: 0;
     overflow: hidden;
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
 }
 
 .bg-grid {
     position: fixed;
     inset: 0;
+    pointer-events: none;
     background-image:
         linear-gradient(oklch(100% 0 0 / 0.04) 1px, transparent 1px),
         linear-gradient(90deg, oklch(100% 0 0 / 0.04) 1px, transparent 1px);
     background-size: 40px 40px;
-    pointer-events: none;
 }
 
-/* ===== Error page ===== */
+/* ===== Scrollbar ===== */
 
-.error-content {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
+* {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(100% 0 0 / 0.15) transparent;
 }
 
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--color-primary-subtle);
-    border: 1px solid oklch(70% 0.18 48 / 0.3);
-    border-radius: 999px;
-    padding: 6px 16px;
-    font-size: 12px;
-    text-transform: uppercase;
-    color: var(--color-primary);
-    margin-bottom: 1.5rem;
+*::-webkit-scrollbar {
+    width: 4px;
 }
 
-.dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    animation: blink 1.2s ease-in-out infinite;
-}
-
-@keyframes blink {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.2;
-    }
-}
-
-.error-code {
-    font-size: clamp(6rem, 18vw, 11rem);
-    font-weight: 800;
-    line-height: 1;
-    background: linear-gradient(135deg, #fff, #a7a9be);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.error-msg {
-    font-size: clamp(1.1rem, 3vw, 1.5rem);
-    font-weight: 700;
-}
-
-.error-sub {
-    color: var(--color-muted);
-    max-width: 420px;
-    line-height: 1.6;
-}
-
-.error-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 2rem;
-}
-
-.btn {
-    padding: 12px 28px;
-    border-radius: 999px;
-    font-weight: 700;
-    cursor: pointer;
-    border: none;
-    transition:
-        transform 0.15s,
-        opacity 0.15s;
-}
-
-.btn:active {
-    transform: scale(0.96);
-}
-
-.btn-primary {
-    background: var(--color-primary);
-    color: oklch(15% 0.05 48);
-}
-
-.btn-ghost {
+*::-webkit-scrollbar-track {
     background: transparent;
-    color: var(--color-text);
-    border: 1px solid var(--color-border-strong);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: oklch(100% 0 0 / 0.15);
+    border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: oklch(100% 0 0 / 0.3);
 }

@@ -1,4 +1,4 @@
-import { CalendarDays, House, Server, Users } from '@lucide/svelte'
+import { BookOpen, CalendarDays, House, Server, Users } from '@lucide/svelte'
 
 export type NavItem = {
     id: number
@@ -13,4 +13,5 @@ export const NAV_ITEMS: NavItem[] = [
     { id: 2, href: '/groups', label: 'Группы', icon: Users, authOnly: false },
     { id: 3, href: '/schedule', label: 'Расписание', icon: CalendarDays, authOnly: false },
     { id: 4, href: '/files', label: 'Файловый обменник', icon: Server, authOnly: true },
+    { id: 5, href: '/tests', label: 'Тесты', icon: BookOpen, authOnly: true },
 ]

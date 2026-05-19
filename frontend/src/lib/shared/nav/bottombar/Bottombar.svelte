@@ -4,7 +4,7 @@
     import { UserCircle } from '@lucide/svelte'
     import { NAV_ITEMS } from '../items.config'
     import { page } from '$app/state'
-    import BottomItem from './BottomItem.svelte'
+    import BottomBarItem from './BottomBarItem.svelte'
 
     let open = $state(false)
     let activeId = $state(NAV_ITEMS[0]?.id ?? '')
@@ -18,9 +18,9 @@
 
 <div class="fixed bottom-10 w-full md:hidden">
     <div class="flex items-center justify-center gap-4 px-4">
-        <div class="glass flex items-center gap-2 p-2">
+        <div class="flex items-center gap-2 glass p-2">
             {#each visibleItems as item (item.id)}
-                <BottomItem
+                <BottomBarItem
                     {item}
                     variant={activeId === item.id ? 'active' : 'default'}
                     onClick={() => (activeId = item.id)}
@@ -31,9 +31,9 @@
         <button
             onclick={() => (open = true)}
             class="
-                glass glass-circle
-                duration-normal flex size-16 shrink-0 items-center
-                justify-center text-muted transition-all
+                duration-normal flex
+                size-16 shrink-0 items-center justify-center glass
+                glass-circle text-muted transition-all
                 hover:text-foreground
                 active:scale-[0.95]
             "

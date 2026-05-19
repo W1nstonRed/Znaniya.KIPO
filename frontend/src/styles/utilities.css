@@ -1,61 +1,59 @@
-.page-container {
-    height: 100dvh;
-    width: 100dvw;
+@utility page-container {
+    width: 100%;
     max-width: var(--container-width);
     margin-inline: auto;
-    padding-inline: var(--space-4);
+    padding-inline: var(--app-space-4);
     position: relative;
 }
 
-.app-container {
-    height: 100dvh;
-    width: 100dvw;
+@utility app-container {
+    width: 100%;
+    min-height: 100dvh;
     max-width: var(--max-page-width);
+    margin-inline: auto;
 }
 
-.stack {
+@utility stack {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--app-space-4);
 }
 
-.cluster {
+@utility cluster {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--app-space-3);
 }
 
-.grid-auto {
+@utility grid-auto {
     display: grid;
-
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-    gap: var(--space-4);
+    gap: var(--app-space-4);
 }
 
-.glass {
+@utility glass {
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0);
-    border-radius: var(--radius-xl);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-
-    @supports not (backdrop-filter: blur(1px)) {
-        background: rgba(255, 255, 255, 0.6);
-    }
+    background: oklch(100% 0 0 / 0.08);
+    border: 1px solid oklch(100% 0 0 / 0.06);
+    border-radius: var(--app-radius-xl);
+    box-shadow: var(--app-shadow-md);
 }
 
-.blob {
+@utility glass-circle {
+    border-radius: 9999px;
+}
+
+@utility blob {
     position: absolute;
-    border-radius: 50%;
+    border-radius: 9999px;
     filter: blur(80px);
     opacity: 0.25;
     z-index: -1;
     animation: pulse 6s ease-in-out infinite alternate;
 }
 
-.blob1 {
+@utility blob1 {
     width: 340px;
     height: 340px;
     background: #f25f4c;
@@ -63,7 +61,7 @@
     left: -100px;
 }
 
-.blob2 {
+@utility blob2 {
     width: 280px;
     height: 280px;
     background: #e53170;
@@ -76,34 +74,56 @@
     from {
         transform: scale(1);
     }
+
     to {
         transform: scale(1.18);
     }
 }
 
-.glass-circle {
-    border-radius: 100%;
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+
+    overflow-x: hidden; /* 🔥 убирает уезд вправо */
 }
 
-* {
-    scrollbar-width: thin;
-    scrollbar-color: oklch(100% 0 0 / 0.15) transparent;
+/* ===== SIDEBAR ===== */
+.sidebar {
+    height: 100%;
+    width: 240px;
+    flex-shrink: 0;
+    display: none;
 }
 
-/* webkit (chrome, safari) */
-*::-webkit-scrollbar {
-    width: 4px;
+/* ===== MAIN ===== */
+.main {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
 }
 
-*::-webkit-scrollbar-track {
-    background: transparent;
+/* контент занимает всё кроме bottom bar */
+.content {
+    flex: 1;
+    min-width: 0;
 }
 
-*::-webkit-scrollbar-thumb {
-    background: oklch(100% 0 0 / 0.15);
-    border-radius: 9999px;
+/* bottom bar ВСЕГДА снизу */
+.bottom {
+    display: block;
 }
 
-*::-webkit-scrollbar-thumb:hover {
-    background: oklch(100% 0 0 / 0.3);
+/* ===== DESKTOP ===== */
+@media (min-width: 768px) {
+    .sidebar {
+        display: block;
+    }
+
+    .bottom {
+        display: none;
+    }
 }
