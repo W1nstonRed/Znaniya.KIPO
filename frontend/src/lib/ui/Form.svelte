@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createFormStore } from '$lib/stores/form.svelte'
+    import { createFormStore } from '$lib/stores/ui/form.svelte'
     import { setContext, untrack, type Snippet } from 'svelte'
 
     type Values = Record<string, any>

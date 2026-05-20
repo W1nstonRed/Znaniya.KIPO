@@ -1,7 +1,8 @@
 <script lang="ts">
+    import { cn } from '$lib/utils/cn.utils'
     import { setContext, untrack, type Snippet } from 'svelte'
-    import { cn } from '$lib/utils'
     import { fade } from 'svelte/transition'
+    import {} from 'svelte'
 
     interface Props {
         children: Snippet
@@ -9,47 +10,57 @@
     }
 
     const { children, defaultValue }: Props = $props()
+    const initVal = untrack(() => defaultValue ?? '')
 
-    const initialValue = untrack(() => defaultValue ?? '')
-    let active = $state(initialValue)
-    let tabs = $state<{ value: string; label: string }[]>([])
+    let active = $state(initVal)
+    let tabs = $state<{ val: string; label: string }[]>([])
 
-    setContext('tabs', {
+    function register(val: string, label: string) {
+        if (tabs.some(t => t.val === val)) return
+        tabs = [...tabs, { val, label }]
+        if (!initVal && tabs.length === 1) {
+            active = val
+        }
+    }
+    function setActive(val: string) {
+        active = val
+    }
+
+    setContext('auth_tabs', {
         get active() {
             return active
         },
-        setActive: (value: string) => (active = value),
-        register: (value: string, label: string) => {
-            if (tabs.find(t => t.value === value)) return
-            tabs.push({ value, label })
-            if (!untrack(() => defaultValue) && tabs.length === 1) active = value
+        get tabs() {
+            return tabs
         },
+        register,
+        setActive,
     })
 </script>
 
-<div class="inline-flex flex-col gap-4">
-    <div
-        class="relative flex flex-wrap items-center justify-center gap-1 rounded-2xl border border-white/8 bg-white/5 p-1.5 backdrop-blur-md"
-    >
-        {#each tabs as tab (tab.value)}
+<div
+    class={cn('inline-flex flex-col gap-4 rounded-md border border-background', 'w-full p-3 glass')}
+>
+    <div class="flex flex-row max-sm:flex-col">
+        {#each tabs as tab (tab.val)}
             <button
+                aria-label="button"
                 type="button"
                 class={cn(
-                    'relative rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200',
-                    active === tab.value
-                        ? 'bg-primary text-white shadow-[0_0_16px_oklch(70.551%_0.17762_48.484/0.4)]'
-                        : 'text-white/40 hover:bg-white/5 hover:text-white/70',
+                    'rounded-xl px-4 py-2 text-sm font-medium',
+                    active === tab.val
+                        ? 'bg-primary text-foreground'
+                        : 'text-foreground/40 hover:bg-white/5 hover:text-foreground/70',
                 )}
-                onclick={() => (active = tab.value)}
+                onclick={() => setActive(tab.val)}
             >
                 {tab.label}
             </button>
         {/each}
     </div>
-
-    {#key active}
-        <div class="min-h-48 w-full" in:fade={{ duration: 150 }}>
-            {@render children()}
-        </div>
-    {/key}
 </div>
+{#key active}
+    <div in:fade={{ duration: 150 }} class="min-h-48">
+        {@render children?.()}
+    </div>
+{/key}

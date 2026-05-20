@@ -1,129 +1,75 @@
-@utility page-container {
-    width: 100%;
-    max-width: var(--container-width);
-    margin-inline: auto;
-    padding-inline: var(--app-space-4);
-    position: relative;
-}
-
-@utility app-container {
-    width: 100%;
-    min-height: 100dvh;
-    max-width: var(--max-page-width);
-    margin-inline: auto;
-}
-
-@utility stack {
-    display: flex;
-    flex-direction: column;
-    gap: var(--app-space-4);
-}
-
-@utility cluster {
-    display: flex;
-    align-items: center;
-    gap: var(--app-space-3);
-}
-
-@utility grid-auto {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--app-space-4);
-}
+/* ===== GLASS SYSTEM ===== */
 
 @utility glass {
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    background: oklch(100% 0 0 / 0.08);
-    border: 1px solid oklch(100% 0 0 / 0.06);
+    background: rgb(255 255 255 / 0);
+
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+
+    border: 1px solid rgb(255 255 255 / 0.1);
+
+    box-shadow:
+        0 10px 40px rgb(0 0 0 / 0.35),
+        inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+@utility glass-card {
+    overflow: hidden;
+
+    background: rgba(255, 255, 255, 0.06);
+    /* Размытие того, что находится позади элемента */
+    backdrop-filter: blur(2px);
+    /* Для поддержки в старых версиях Safari */
+    -webkit-backdrop-filter: blur(2px);
+    /* Тонкая полупрозрачная рамка для эффекта объема */
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: var(--app-radius-xl);
-    box-shadow: var(--app-shadow-md);
+
+    box-shadow:
+        0 20px 80px rgb(0 0 0 / 0.55),
+        inset 0 1px 0 rgb(255 255 255 / 0.1),
+        inset 0 -1px 0 rgb(0 0 0 / 0.25);
 }
 
-@utility glass-circle {
-    border-radius: 9999px;
+@utility glass-modal {
+    background: linear-gradient(180deg, rgb(20 20 30 / 0.75), rgb(10 10 20 / 0.55));
+
+    backdrop-filter: blur(34px);
+    -webkit-backdrop-filter: blur(34px);
+
+    border: 1px solid rgb(255 255 255 / 0.12);
+
+    border-radius: var(--app-radius-xl);
+
+    box-shadow: 0 20px 80px rgb(0 0 0 / 0.55);
 }
 
-@utility blob {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(80px);
-    opacity: 0.25;
-    z-index: -1;
-    animation: pulse 6s ease-in-out infinite alternate;
+/* ===== LAYOUT HELPERS ===== */
+
+@utility surface {
+    background: rgb(255 255 255 / 0.04);
 }
 
-@utility blob1 {
-    width: 340px;
-    height: 340px;
-    background: #f25f4c;
-    top: -80px;
-    left: -100px;
+@utility elevated {
+    background: rgb(255 255 255 / 0.08);
 }
 
-@utility blob2 {
-    width: 280px;
-    height: 280px;
-    background: #e53170;
-    bottom: -60px;
-    right: -60px;
-    animation-delay: -3s;
+/* ===== SAFE TEXT ===== */
+
+@utility text-muted {
+    color: rgb(255 255 255 / 0.65);
 }
 
-@keyframes pulse {
-    from {
-        transform: scale(1);
-    }
-
-    to {
-        transform: scale(1.18);
-    }
+@utility text-faint {
+    color: rgb(255 255 255 / 0.45);
 }
 
-.app-shell {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
+/* ===== BORDER SYSTEM ===== */
 
-    overflow-x: hidden; /* 🔥 убирает уезд вправо */
+@utility border-soft {
+    border: 1px solid rgb(255 255 255 / 0.08);
 }
 
-/* ===== SIDEBAR ===== */
-.sidebar {
-    height: 100%;
-    width: 240px;
-    flex-shrink: 0;
-    display: none;
-}
-
-/* ===== MAIN ===== */
-.main {
-    display: flex;
-    flex-direction: column;
-
-    flex: 1;
-    min-width: 0;
-    min-height: 100vh;
-}
-
-/* контент занимает всё кроме bottom bar */
-.content {
-    flex: 1;
-    min-width: 0;
-}
-
-/* bottom bar ВСЕГДА снизу */
-.bottom {
-    display: block;
-}
-
-/* ===== DESKTOP ===== */
-@media (min-width: 768px) {
-    .sidebar {
-        display: block;
-    }
-
-    .bottom {
-        display: none;
-    }
+@utility border-strong {
+    border: 1px solid rgb(255 255 255 / 0.14);
 }

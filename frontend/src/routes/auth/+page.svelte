@@ -1,26 +1,29 @@
 <script>
-    import { page } from '$app/state'
-    import { toasts } from '$lib/shared/toast/toast.svelte'
-    import { onMount } from 'svelte'
-    import AuthHeader from '$lib/components/auth/components/AuthHeader.svelte'
-    import LeftSide from '$lib/components/auth/components/LeftSide.svelte'
-    import FeatureSide from '$lib/components/auth/components/FeatureSide.svelte'
-
-    onMount(() => {
-        if (page.url.searchParams.get('reason') === 'unauthorized') {
-            toasts.warning('Отказано в доступе', 'Для посещения страницы, необходима авторизация')
-        }
-    })
+    import LoginForm from '$lib/components/auth/LoginForm.svelte'
+    import Tab from '$lib/ui/Tab.svelte'
+    import Tabs from '$lib/ui/Tabs.svelte'
 </script>
 
-<div class="flex h-full w-full flex-col items-center justify-center gap-2">
-    <div class="glass flex w-[75%] items-center justify-center p-6">
-        <AuthHeader />
-    </div>
-    <div class="flex w-[75%] flex-col gap-2 md:flex-row">
-        <LeftSide />
-        <div class="glass w-full p-6">
-            <FeatureSide />
+<svelte:head>
+    <title>Знания.КИПО | Авторизация</title>
+</svelte:head>
+
+<div class="flex min-h-dvh items-center justify-center">
+    <div class="glass-card p-10">
+        <div class="header my-5 text-center">
+            <div class="text-2xl font-bold">
+                Знания.<span class="text-primary">КИПО</span>
+            </div>
+            <span class="text-muted">Добро пожаловать</span>
         </div>
+        <Tabs>
+            <div class="mt-10"></div>
+            <Tab label="Авторизация" value="auth-tab-1">
+                <LoginForm />
+            </Tab>
+            <Tab label="Регистрация" value="auth-tab-2">
+                <p>tab register</p>
+            </Tab>
+        </Tabs>
     </div>
 </div>

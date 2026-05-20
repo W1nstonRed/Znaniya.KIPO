@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cn } from '$lib/utils'
+    import { cn } from '$lib/utils/cn.utils'
     import { getContext } from 'svelte'
 
     interface Props {

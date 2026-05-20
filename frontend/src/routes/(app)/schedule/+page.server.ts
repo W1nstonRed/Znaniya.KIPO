@@ -1,5 +1,3 @@
-// routes/schedule/+page.server.ts
-
 import type { PageServerLoad } from './$types'
 import { scheduleApi } from '$lib/api/schedule/client'
 import { resolveMySchedule } from '$lib/api/schedule/resolve'

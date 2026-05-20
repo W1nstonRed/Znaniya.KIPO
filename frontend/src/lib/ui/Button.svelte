@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cn } from '$lib/utils'
+    import { cn } from '$lib/utils/cn.utils'
     import { Shell } from '@lucide/svelte'
     import { getContext, type Snippet } from 'svelte'
 

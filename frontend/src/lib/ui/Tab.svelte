@@ -9,17 +9,17 @@
 
     const { label, value = label, children }: Props = $props()
 
-    const tabs = getContext<any>('tabs')
+    const tabs = getContext<any>('auth_tabs')
+
+    let isActive = $derived(tabs.active === value)
 
     onMount(() => {
         tabs.register(value, label)
     })
-
-    let isActive = $derived(tabs.active === value)
 </script>
 
 {#if isActive}
-    <div>
-        {@render children()}
+    <div class="">
+        {@render children?.()}
     </div>
 {/if}

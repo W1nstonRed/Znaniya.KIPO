@@ -1,6 +1,5 @@
 <script lang="ts">
     import { page } from '$app/state'
-    import ViewList from '$lib/components/schedule/view-list/ViewList.svelte'
     let user = $derived(page.data.user)
 </script>
 
@@ -13,5 +12,4 @@
 
 <section class="py-10">
     <div class="py-4 text-2xl text-primary">Все группы</div>
-    <ViewList />
 </section>

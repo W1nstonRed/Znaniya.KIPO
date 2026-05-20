@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { toasts, type Toast } from './toast.svelte'
-    import AnimateComponent from '../animate-component/AnimateComponent.svelte'
+    import { toasts, type Toast } from '../../../stores/toast.svelte'
     import { CircleCheck, CircleX, Info, TriangleAlert, X } from '@lucide/svelte'
 
     interface Props {
@@ -57,48 +56,46 @@
     })
 </script>
 
-<AnimateComponent>
-    <div
-        class="toast toast--{toast.type}"
-        role="button"
-        tabindex="0"
-        onclick={() => toasts.remove(toast.id)}
-        onkeydown={e => (e.key === 'Enter' || e.key === ' ' ? toasts.remove(toast.id) : null)}
-        onmouseenter={handleMouseEnter}
-        onmouseleave={handleMouseLeave}
-    >
-        <div class="toast__icon">
-            <Icon size={18} />
-        </div>
+<div
+    class="toast toast--{toast.type}"
+    role="button"
+    tabindex="0"
+    onclick={() => toasts.remove(toast.id)}
+    onkeydown={e => (e.key === 'Enter' || e.key === ' ' ? toasts.remove(toast.id) : null)}
+    onmouseenter={handleMouseEnter}
+    onmouseleave={handleMouseLeave}
+>
+    <div class="toast__icon">
+        <Icon size={18} />
+    </div>
 
-        <div class="toast__body">
-            <p class="toast__title">{toast.title}</p>
-            {#if toast.message}
-                <p class="toast__desc">{toast.message}</p>
-            {/if}
-        </div>
-
-        <button
-            class="toast__close"
-            onclick={e => {
-                e.stopPropagation()
-                toasts.remove(toast.id)
-            }}
-            aria-label="Закрыть"
-        >
-            <X size={14} />
-        </button>
-
-        {#if toast.duration > 0}
-            <div class="toast__progress-track">
-                <div
-                    class="toast__progress-fill toast__progress-fill--{toast.type}"
-                    bind:this={progressEl}
-                ></div>
-            </div>
+    <div class="toast__body">
+        <p class="toast__title">{toast.title}</p>
+        {#if toast.message}
+            <p class="toast__desc">{toast.message}</p>
         {/if}
     </div>
-</AnimateComponent>
+
+    <button
+        class="toast__close"
+        onclick={e => {
+            e.stopPropagation()
+            toasts.remove(toast.id)
+        }}
+        aria-label="Закрыть"
+    >
+        <X size={14} />
+    </button>
+
+    {#if toast.duration > 0}
+        <div class="toast__progress-track">
+            <div
+                class="toast__progress-fill toast__progress-fill--{toast.type}"
+                bind:this={progressEl}
+            ></div>
+        </div>
+    {/if}
+</div>
 
 <style>
     .toast {

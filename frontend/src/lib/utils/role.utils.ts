@@ -1,10 +1,4 @@
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-import type { UserRole } from './api/auth/types'
-
-export function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs))
-}
+import type { UserRole } from '$lib/api/auth/types'
 
 export function formatRole(role: UserRole): string {
     const map: Record<UserRole, string> = {
