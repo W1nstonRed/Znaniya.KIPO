@@ -66,7 +66,7 @@
         </nav>
 
         <!-- Footer -->
-        <div class="border-t border-white/[0.07] px-2 pt-2 pb-3.5">
+        <div class="flex flex-col gap-4 border-t border-white/[0.07] px-2 pt-2 pb-3.5">
             {#if user}
                 <button
                     class="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 transition-colors hover:bg-white/[0.07]"
@@ -85,7 +85,7 @@
                 </button>
             {:else}
                 <p
-                    class="mb-2 flex items-center gap-1.5 rounded-lg border border-primary/15 bg-primary/[0.08] px-2.5 py-1.5 text-[11px] text-orange-300/70"
+                    class="flex items-center gap-1.5 rounded-lg border border-primary/15 bg-primary/[0.08] px-2.5 py-1.5 text-[11px] text-orange-300/70"
                 >
                     <Lock size={12} />
                     Войдите, чтобы открыть все разделы

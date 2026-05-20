@@ -7,7 +7,7 @@
     import Form from '$lib/ui/Form.svelte'
     import FormField from '$lib/ui/FormField.svelte'
     import Button from '$lib/ui/Button.svelte'
-    import { toasts } from '$lib/components/globals/toast/toast.svelte'
+    import { toasts } from '$lib/stores/toast.svelte'
 
     async function submit(values: Record<string, any>) {
         const { username, password } = values

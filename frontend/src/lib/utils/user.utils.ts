@@ -1,4 +1,5 @@
 export function getInitials(fullName: string): string {
+    if (!fullName?.trim()) return '?'
     return fullName
         .trim()
         .split(/\s+/)

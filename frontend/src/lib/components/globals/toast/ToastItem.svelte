@@ -66,7 +66,7 @@
     onmouseleave={handleMouseLeave}
 >
     <div class="toast__icon">
-        <Icon size={18} />
+        <Icon size={17} />
     </div>
 
     <div class="toast__body">
@@ -84,7 +84,7 @@
         }}
         aria-label="Закрыть"
     >
-        <X size={14} />
+        <X size={13} />
     </button>
 
     {#if toast.duration > 0}
@@ -102,22 +102,31 @@
         position: relative;
         display: flex;
         align-items: flex-start;
-        gap: 12px;
-        padding: 14px 16px 18px;
-        border-radius: 12px;
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
+        gap: 10px;
+        padding: 12px 14px 16px;
+        border-radius: 16px;
         cursor: pointer;
         overflow: hidden;
-        transition: border-color 0.15s;
         pointer-events: all;
-        animation: slide-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+        transition:
+            background 0.15s,
+            border-color 0.15s;
+        animation: slide-in 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     @keyframes slide-in {
         from {
             opacity: 0;
-            transform: translateX(24px) scale(0.97);
+            transform: translateX(20px) scale(0.96);
         }
         to {
             opacity: 1;
@@ -126,7 +135,8 @@
     }
 
     .toast:hover {
-        border-color: #3a3a3a;
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.18);
     }
 
     .toast__icon {
@@ -135,16 +145,16 @@
     }
 
     .toast--success .toast__icon {
-        color: #4ade80;
+        color: oklch(70% 0.18 145);
     }
     .toast--error .toast__icon {
-        color: #f87171;
+        color: oklch(68% 0.22 27);
     }
     .toast--warning .toast__icon {
-        color: #f97316;
+        color: oklch(72% 0.18 60);
     }
     .toast--info .toast__icon {
-        color: #60a5fa;
+        color: oklch(68% 0.16 240);
     }
 
     .toast__body {
@@ -154,16 +164,16 @@
 
     .toast__title {
         margin: 0;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
-        color: #f5f5f5;
+        color: rgba(255, 255, 255, 0.9);
         line-height: 1.4;
     }
 
     .toast__desc {
         margin: 2px 0 0;
-        font-size: 13px;
-        color: #888;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.45);
         line-height: 1.4;
     }
 
@@ -171,16 +181,17 @@
         all: unset;
         cursor: pointer;
         flex-shrink: 0;
-        color: #555;
+        color: rgba(255, 255, 255, 0.25);
         display: flex;
         align-items: center;
         padding: 2px;
-        border-radius: 4px;
+        border-radius: 6px;
         transition: color 0.15s;
         margin-top: 1px;
     }
+
     .toast__close:hover {
-        color: #aaa;
+        color: rgba(255, 255, 255, 0.6);
     }
 
     .toast__progress-track {
@@ -189,25 +200,26 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: #2a2a2a;
+        background: rgba(255, 255, 255, 0.06);
     }
 
     .toast__progress-fill {
         height: 100%;
         width: 100%;
         transition: none;
+        border-radius: 0 2px 2px 0;
     }
 
-    .toast__progress-fill--success {
-        background: #4ade80;
+    .toast--success .toast__progress-fill {
+        background: oklch(70% 0.18 145);
     }
-    .toast__progress-fill--error {
-        background: #f87171;
+    .toast--error .toast__progress-fill {
+        background: oklch(68% 0.22 27);
     }
-    .toast__progress-fill--warning {
-        background: #f97316;
+    .toast--warning .toast__progress-fill {
+        background: oklch(72% 0.18 60);
     }
-    .toast__progress-fill--info {
-        background: #60a5fa;
+    .toast--info .toast__progress-fill {
+        background: oklch(68% 0.16 240);
     }
 </style>
