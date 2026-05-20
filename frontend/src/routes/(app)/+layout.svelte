@@ -42,10 +42,6 @@
                 console.error('Push subscribe failed:', error)
             })
     })
-
-    $effect(() => {
-        console.log(user)
-    })
 </script>
 
 <div class="flex h-dvh w-screen overflow-hidden">
