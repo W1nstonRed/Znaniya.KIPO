@@ -1,4 +1,3 @@
-<!-- BottomBar.svelte -->
 <script lang="ts">
     import { page } from '$app/stores'
     import { resolve } from '$app/paths'
@@ -9,6 +8,9 @@
     import BottomSheet from '$lib/ui/BottomSheet.svelte'
 
     let user = $derived(pageData.data.user)
+    $effect(() => {
+        console.log(user)
+    })
     let profileOpen = $state(false)
 </script>
 
