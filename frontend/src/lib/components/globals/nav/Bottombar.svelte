@@ -14,7 +14,7 @@
     let profileOpen = $state(false)
 </script>
 
-<nav class="fixed right-0 bottom-0 left-0 z-30 flex items-center justify-center gap-2 px-3 pb-4">
+<nav class="fixed right-0 bottom-0 left-0 z-30 flex items-center justify-center gap-2 px-3 pb-10">
     <!-- Nav pill — скроллится горизонтально -->
     <div
         style="max-width: calc(100% - 52px - 8px);"
